@@ -76,7 +76,9 @@ class CertificateDb {
                     ?: return
                 val pemKey = certData.getJsonObject("pemConfig")?.getString("key")
                     ?: return
-                webClientOptions.setPemKeyCertOptions(new PemKeyCertOptions().setCertValue(Buffer.buffer(pemCert)).setKeyValue(Buffer.buffer(pemKey)))
+                webClientOptions.keyCertOptions = PemKeyCertOptions()
+                    .setCertValue(Buffer.buffer(pemCert))
+                    .setKeyValue(Buffer.buffer(pemKey))
                 webClientOptions.setSsl(true).setTrustAll(true)
             }
         }
