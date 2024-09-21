@@ -55,6 +55,7 @@ class CertificateDb {
     fun doesHostMatch(url: String): Boolean {
         val data = jsonData()
         val host = data.getString("host") ?: return false
+        println("doesHostMatch>host: $host")
         return try {
             host == URL(url).host
         } catch (e: Exception) {

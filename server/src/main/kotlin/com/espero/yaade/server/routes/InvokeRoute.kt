@@ -75,6 +75,7 @@ class InvokeRoute(private val vertx: Vertx, private val daoManager: DaoManager) 
             // TODO: improve performance by caching certificates
             val certificates = daoManager.certificatesDao.getAll()
             for (cert in certificates) {
+                println("send>cert: $url")
                 if (cert.canRead(user) && cert.doesHostMatch(url)) {
                     cert.mutateWebClientOptions(webClientOptions)
                     break
