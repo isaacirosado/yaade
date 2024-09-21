@@ -61,10 +61,12 @@ class InvokeRoute(private val vertx: Vertx, private val daoManager: DaoManager) 
             interpolator.interpolate(requestData, collection.id, envName)
         else
             request
+        System.out.println("send>requestData: $requestData")
 
         val method = HttpMethod.valueOf(interpolated.getString("method"))
         val interpolatedUri = interpolated.getString("uri")
         val url = url(interpolatedUri)
+        System.out.println("send>url: $url")
 
         val clientOptions =
             collection.jsonData().getJsonObject("settings")?.getJsonObject("webClientOptions")
@@ -72,16 +74,19 @@ class InvokeRoute(private val vertx: Vertx, private val daoManager: DaoManager) 
         val webClientOptions = WebClientOptions(clientOptions)
 
         if (url.startsWith("https")) {
+            System.out.println("URL starts with https")
             // TODO: improve performance by caching certificates
             val certificates = daoManager.certificatesDao.getAll()
             for (cert in certificates) {
-                println("send>cert: $url")
+                System.out.println("send>cert: $cert")
                 if (cert.canRead(user) && cert.doesHostMatch(url)) {
+                    System.out.println("send>cert: canRead and doesHostMatch")
                     cert.mutateWebClientOptions(webClientOptions)
                     break
                 }
             }
         }
+        System.out.println("send>webClientOptions: $webClientOptions")
         val httpClient = WebClient.create(vertx, webClientOptions)
 
         val httpRequest = httpClient.requestAbs(method, url)
